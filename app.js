@@ -12,6 +12,20 @@ const tarefas = [
   { id: 3, titulo: "Testar API", concluida: false },
 ];
 
+app.get("/tarefas/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const tarefa = tarefas.find((tarefa) => tarefa.id === id);
+
+  if (!tarefa) {
+    return res.status(404).json({
+      erro: "Tarefa não encontrada",
+    });
+  }
+
+  res.json(tarefa);
+});
+
 app.get("/", (req, res) => {
   res.send("API de Tarefas no ar");
 });
