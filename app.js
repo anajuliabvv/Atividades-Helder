@@ -40,6 +40,26 @@ app.get("/tarefas", (req, res) => {
   res.json(tarefas);
 });
 
+app.post("/tarefas", (req, res) => {
+  const { titulo } = req.body;
+
+  if (!titulo || typeof titulo !== "string") {
+    return res.status(400).json({
+      erro: 'O campo "titulo" é obrigatório e deve ser uma string',
+    });
+  }
+
+  const novaTarefa = {
+    id: tarefas.length + 1,
+    titulo,
+    concluida: false,
+  };
+
+  tarefas.push(novaTarefa);
+
+  res.status(201).json(novaTarefa);
+});
+
 app.get("/", (req, res) => {
   res.send("API de Tarefas no ar");
 });
