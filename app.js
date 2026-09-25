@@ -26,12 +26,22 @@ app.get("/tarefas/:id", (req, res) => {
   res.json(tarefa);
 });
 
-app.get("/", (req, res) => {
-  res.send("API de Tarefas no ar");
+app.get("/tarefas", (req, res) => {
+  const { concluida } = req.query;
+
+  if (concluida !== undefined) {
+    const resultado = tarefas.filter(
+      (tarefa) => tarefa.concluida === (concluida === "true")
+    );
+
+    return res.json(resultado);
+  }
+
+  res.json(tarefas);
 });
 
-app.get("/tarefas", (req, res) => {
-  res.json(tarefas);
+app.get("/", (req, res) => {
+  res.send("API de Tarefas no ar");
 });
 
 app.listen(PORT, () => {
