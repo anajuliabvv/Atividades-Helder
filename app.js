@@ -40,25 +40,41 @@ app.get("/tarefas", (req, res) => {
   res.json(tarefas);
 });
 
-app.post("/tarefas", (req, res) => {
-  const { titulo } = req.body;
+const middlewareAutenticacao = (req, res, next) => {
+  console.log("Autenticação realizada");
+  next();
+};
 
-  if (!titulo || typeof titulo !== "string") {
+const middlewareValidacao = (req, res, next) => {
+  if (!req.body.titulo) {
     return res.status(400).json({
-      erro: 'O campo "titulo" é obrigatório e deve ser uma string',
+      erro: "Título é obrigatório",
     });
   }
 
-  const novaTarefa = {
-    id: tarefas.length + 1,
-    titulo,
-    concluida: false,
-  };
+  next();
+};
 
-  tarefas.push(novaTarefa);
+const middlewareLog = (req, res, next) => {
+  console.log("POST /tarefas");
+  next();
+};
 
-  res.status(201).json(novaTarefa);
-});
+app.post(
+  "/tarefas",
+  [middlewareAutenticacao, middlewareValidacao, middlewareLog],
+  (req, res) => {
+    const novaTarefa = {
+      id: tarefas.length + 1,
+      titulo: req.body.titulo,
+      concluida: false,
+    };
+
+    tarefas.push(novaTarefa);
+
+    res.status(201).json(novaTarefa);
+  }
+);
 
 app.get("/", (req, res) => {
   res.send("API de Tarefas no ar");
